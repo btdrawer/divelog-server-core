@@ -1,6 +1,7 @@
 const resources = require("./constants/resources");
 const errorCodes = require("./constants/errorCodes");
 const authUtils = require("./authUtils");
+const db = require("./db");
 
 const UserModel = require("./models/UserModel");
 const DiveModel = require("./models/DiveModel");
@@ -12,6 +13,7 @@ module.exports = {
     resources,
     errorCodes,
     authUtils,
+    db,
     models: {
         UserModel,
         DiveModel,
