@@ -6,7 +6,7 @@ const {
     INVALID_AUTH,
 } = require("../constants/errorCodes");
 const { USER, DIVE, CLUB, GEAR } = require("../constants/resources");
-const { signJwt } = require("../utils/authUtils");
+const { signJwt } = require("../authUtils");
 
 const UserSchema = new Schema({
     name: {

@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const { USER, CLUB } = require("../utils/resources");
+const { USER, CLUB } = require("../constants/resources");
 
 const ClubSchema = new Schema({
     name: {
