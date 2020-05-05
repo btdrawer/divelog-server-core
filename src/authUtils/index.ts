@@ -4,11 +4,16 @@ import { config } from "dotenv";
 
 config();
 
-export const getAuthData = (req: Request): any => {
+export const getAuthData = (req: Request | any): any => {
     if (req) {
-        const header = req.connection
-            ? req.connection.context.Authorization
-            : req.req.headers.authorization;
+        let header;
+        if (req.header("Authorization")) {
+            header = req.header("Authorization");
+        } else {
+            header = req.connection
+                ? req.connection.context.Authorization
+                : req.req.headers.authorization;
+        }
 
         if (header) {
             const token = header.replace("Bearer ", "");
