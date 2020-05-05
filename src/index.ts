@@ -14,7 +14,7 @@ import GearModel from "./models/GearModel";
 import ClubModel from "./models/ClubModel";
 import GroupModel from "./models/GroupModel";
 
-const utils = {
+module.exports = {
     resources,
     errorCodes,
     subscriptionKeys,
@@ -30,5 +30,3 @@ const utils = {
         GroupModel,
     },
 };
-
-export default utils;
