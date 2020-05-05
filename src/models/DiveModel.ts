@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Schema, model } from "mongoose";
+import { Schema, Query, model } from "mongoose";
 import { IDive } from "../types/modelTypes";
 import {
     INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT,
@@ -75,12 +75,13 @@ DiveSchema.pre<IDive>("save", function (next) {
     next();
 });
 
-DiveSchema.pre<IDive & { _update: IDive }>("findOneAndUpdate", async function (
-    next
-) {
-    processTime(this._update);
-    next();
-});
+DiveSchema.pre<Query<IDive> & { _update: IDive }>(
+    "findOneAndUpdate",
+    async function (next) {
+        processTime(this._update);
+        next();
+    }
+);
 
 const DiveModel = model<IDive>(DIVE, DiveSchema);
 
