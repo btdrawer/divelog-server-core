@@ -75,13 +75,11 @@ DiveSchema.pre<IDive>("save", function (next) {
     next();
 });
 
-DiveSchema.pre<Query<IDive> & { _update: IDive }>(
-    "findOneAndUpdate",
-    async function (next) {
-        processTime(this._update);
-        next();
-    }
-);
+DiveSchema.pre<IDive>("findOneAndUpdate", function (next) {
+    console.log("this", this);
+    processTime(this);
+    next();
+});
 
 const DiveModel = model<IDive>(DIVE, DiveSchema);
 
