@@ -26,6 +26,6 @@ export const getUserId = (req: Request): string => {
 };
 
 export const signJwt = (id: string): string =>
-    jwt.sign({ _id: id }, <string>process.env.JWT_KEY, {
+    jwt.sign({ id }, <string>process.env.JWT_KEY, {
         expiresIn: "3h",
     });
