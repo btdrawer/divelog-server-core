@@ -1,5 +1,5 @@
-const { Schema, model } = require("mongoose");
-const { USER, CLUB } = require("../constants/resources");
+import { Schema, model } from "mongoose";
+import { USER, CLUB } from "../constants/resources";
 
 const ClubSchema = new Schema({
     name: {
@@ -35,4 +35,6 @@ const ClubSchema = new Schema({
     },
 });
 
-module.exports = model(CLUB, ClubSchema);
+const ClubModel = model(CLUB, ClubSchema);
+
+export default ClubModel;

@@ -1,5 +1,6 @@
-const { Schema, model } = require("mongoose");
-const { USER, GEAR } = require("../constants/resources");
+import { Schema, model } from "mongoose";
+import { IGear } from "../types/modelTypes";
+import { USER, GEAR } from "../constants/resources";
 
 const GearSchema = new Schema({
     name: {
@@ -24,4 +25,6 @@ const GearSchema = new Schema({
     },
 });
 
-module.exports = model(GEAR, GearSchema);
+const GearModel = model<IGear>(GEAR, GearSchema);
+
+export default GearModel;

@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
-const redisClient = require("./redisClient");
+import redisClient from "./redisClient";
 
-module.exports = () => {
+const cache = () => {
     const exec = mongoose.Query.prototype.exec;
 
-    mongoose.Query.prototype.cache = async function (options = {}) {
+    mongoose.Query.prototype.cache = async function (options: {
+        hashKey: string;
+    }) {
         this.useCache = true;
         this.hashKey = options.hashKey || "";
         return this;
@@ -31,3 +33,5 @@ module.exports = () => {
         return data;
     };
 };
+
+export default cache;

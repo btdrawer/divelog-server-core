@@ -1,6 +1,7 @@
-const { Schema, model } = require("mongoose");
-const { USER_ALREADY_IN_GROUP, NOT_FOUND } = require("../constants/errorCodes");
-const { USER, GROUP } = require("../constants/resources");
+import { Schema, model } from "mongoose";
+import { IGroup } from "../types/modelTypes";
+import { USER_ALREADY_IN_GROUP, NOT_FOUND } from "../constants/errorCodes";
+import { USER, GROUP } from "../constants/resources";
 
 const GroupSchema = new Schema({
     name: {
@@ -27,7 +28,7 @@ const GroupSchema = new Schema({
     ],
 });
 
-GroupSchema.methods.addUser = async function (user_id) {
+GroupSchema.methods.addUser = async function (user_id: string) {
     if (!this.participants.includes(user_id)) {
         this.participants.push(user_id);
         await this.save();
@@ -36,7 +37,7 @@ GroupSchema.methods.addUser = async function (user_id) {
     }
 };
 
-GroupSchema.methods.leave = async function (user_id) {
+GroupSchema.methods.leave = async function (user_id: string) {
     let index;
 
     for (let i = 0; i < this.participants.length; i++) {
@@ -51,6 +52,6 @@ GroupSchema.methods.leave = async function (user_id) {
     await this.save();
 };
 
-const GroupModel = model(GROUP, GroupSchema);
+const GroupModel = model<IGroup>(GROUP, GroupSchema);
 
-module.exports = GroupModel;
+export default GroupModel;
