@@ -15,10 +15,10 @@ const GroupModel = require("./models/GroupModel");
 module.exports = {
     resources,
     errorCodes,
-    authUtils,
     db,
     cache,
     redisClient,
+    auth: authUtils,
     models: {
         UserModel,
         DiveModel,

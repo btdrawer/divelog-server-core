@@ -12,4 +12,6 @@ module.exports = () => {
     db.on("open", () => console.log("Database connection opened."));
     db.on("error", (err) => console.log(err));
     db.on("close", () => console.log("Database connection closed."));
+
+    return db;
 };
