@@ -75,9 +75,10 @@ DiveSchema.pre<IDive>("save", function (next) {
     next();
 });
 
-DiveSchema.pre<IDive>("findOneAndUpdate", function (next) {
-    console.log("this", this);
-    processTime(this);
+DiveSchema.pre<IDive & { _update: IDive }>("findOneAndUpdate", function (next) {
+    if (this._update) {
+        processTime(this._update);
+    }
     next();
 });
 
