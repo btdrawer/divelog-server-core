@@ -6,7 +6,7 @@ import {
     INVALID_AUTH,
 } from "../constants/errorCodes";
 import { USER, DIVE, CLUB, GEAR } from "../constants/resources";
-import signJwt from "../utils/signJwt";
+import { signJwt } from "../utils/authUtils";
 import { IUser } from "../types/modelTypes";
 
 const UserSchema = new Schema({

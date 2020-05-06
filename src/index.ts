@@ -6,7 +6,7 @@ import db from "./services/db";
 import cache from "./services/cache";
 import redisClient from "./services/redisClient";
 
-import signJwt from "./utils/signJwt";
+import { signJwt, hashPassword } from "./utils/authUtils";
 
 import UserModel from "./models/UserModel";
 import DiveModel from "./models/DiveModel";
@@ -31,4 +31,5 @@ export {
     redisClient,
     models,
     signJwt,
+    hashPassword,
 };
