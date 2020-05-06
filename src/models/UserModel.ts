@@ -6,7 +6,7 @@ import {
     INVALID_AUTH,
 } from "../constants/errorCodes";
 import { USER, DIVE, CLUB, GEAR } from "../constants/resources";
-import { signJwt } from "../utils/authUtils";
+import { signJwt, hashPassword } from "../utils/authUtils";
 import { IUser } from "../types/modelTypes";
 
 const UserSchema = new Schema({
@@ -80,7 +80,7 @@ const UserSchema = new Schema({
 
 UserSchema.pre<IUser>("save", async function (next) {
     if (this.isModified("password"))
-        this.password = bcrypt.hashSync(this.password, 10);
+        this.password = hashPassword(this.password);
 
     if (this.isModified("username")) {
         const user = await UserModel.findOne({
@@ -107,7 +107,7 @@ UserSchema.pre<IUser & { _update: IUser }>("findOneAndUpdate", async function (
     next
 ) {
     if (this._update.password) {
-        this._update.password = bcrypt.hashSync(this._update.password, 10);
+        this._update.password = hashPassword(this._update.password);
     }
 
     if (this._update.username) {
