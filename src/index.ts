@@ -6,6 +6,8 @@ import db from "./services/db";
 import cache from "./services/cache";
 import redisClient from "./services/redisClient";
 
+import signJwt from "./utils/signJwt";
+
 import UserModel from "./models/UserModel";
 import DiveModel from "./models/DiveModel";
 import GearModel from "./models/GearModel";
@@ -28,4 +30,5 @@ export {
     cache,
     redisClient,
     models,
+    signJwt,
 };
