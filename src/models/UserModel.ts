@@ -1,12 +1,11 @@
 import { Schema, model } from "mongoose";
-import bcrypt from "bcrypt";
 import {
     USERNAME_EXISTS,
     EMAIL_EXISTS,
     INVALID_AUTH,
 } from "../constants/errorCodes";
 import { USER, DIVE, CLUB, GEAR } from "../constants/resources";
-import { signJwt, hashPassword } from "../utils/authUtils";
+import { signJwt, hashPassword, comparePassword } from "../utils/authUtils";
 import { IUser } from "../types/modelTypes";
 
 const UserSchema = new Schema({
@@ -132,7 +131,7 @@ UserSchema.statics.authenticate = async (
     const errorMessage = INVALID_AUTH;
 
     if (!user) throw new Error(errorMessage);
-    else if (!bcrypt.compareSync(password, user.password))
+    else if (!comparePassword(password, user.password))
         throw new Error(errorMessage);
 
     user.token = signJwt(user._id);

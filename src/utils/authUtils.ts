@@ -8,3 +8,6 @@ export const signJwt = (id: string): string =>
 
 export const hashPassword = (password: string): string =>
     bcrypt.hashSync(password, 10);
+
+export const comparePassword = (input: string, hash: string): boolean =>
+    bcrypt.compareSync(input, hash);
