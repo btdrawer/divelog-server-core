@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Schema, Query, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { IDive } from "../types/modelTypes";
 import {
     INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT,

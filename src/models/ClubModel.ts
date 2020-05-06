@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { IClub } from "../types/modelTypes";
 import { USER, CLUB } from "../constants/resources";
 
 const ClubSchema = new Schema({
@@ -35,6 +36,6 @@ const ClubSchema = new Schema({
     },
 });
 
-const ClubModel = model(CLUB, ClubSchema);
+const ClubModel = model<IClub>(CLUB, ClubSchema);
 
 export default ClubModel;
