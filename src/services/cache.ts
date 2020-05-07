@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-import redisClient from "./redisClient";
+import { RedisClient } from "redis";
 
-const cache = () => {
+const cache = (redisClient: RedisClient) => {
     const exec = mongoose.Query.prototype.exec;
 
     mongoose.Query.prototype.cache = async function (options: {
@@ -21,7 +21,7 @@ const cache = () => {
             options: this.getOptions(),
             collection: this.mongooseCollection.name,
         });
-        const cachedData = await redisClient.hget(this.hashKey, key);
+        const cachedData: any = await redisClient.hget(this.hashKey, key);
         if (cachedData) {
             const parsedCachedData = JSON.parse(cachedData);
             return Array.isArray(parsedCachedData)
