@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-import { RedisClient } from "redis";
 
-const cache = (redisClient: RedisClient) => {
+const cache = (redisClient: any): void => {
     const exec = mongoose.Query.prototype.exec;
 
     mongoose.Query.prototype.cache = async function (options: {

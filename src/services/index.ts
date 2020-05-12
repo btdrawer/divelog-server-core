@@ -1,9 +1,12 @@
 import cache from "./cache";
 import createRedisClient from "./redis";
-const mongoose = require("mongoose");
+import mongoose, { Connection } from "mongoose";
 
-const connect = async () => {
-    await mongoose.connect(process.env.MONGODB_URL, {
+const connect = async (): Promise<{
+    db: Connection;
+    redisClient: any;
+}> => {
+    await mongoose.connect(<string>process.env.MONGODB_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
@@ -11,6 +14,7 @@ const connect = async () => {
 
     const db = mongoose.connection;
     console.log("Database connection opened.");
+
     const redisClient = createRedisClient();
     cache(redisClient);
     console.log("Redis client set up.");

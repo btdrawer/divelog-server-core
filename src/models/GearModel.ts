@@ -1,8 +1,8 @@
-import { Schema, model } from "mongoose";
+import { Schema, Model, model } from "mongoose";
 import { IGear } from "../types/modelTypes";
 import { USER, GEAR } from "../constants/resources";
 
-const GearSchema = new Schema({
+const GearSchema: Schema = new Schema({
     name: {
         type: String,
         max: 30,
@@ -25,6 +25,6 @@ const GearSchema = new Schema({
     },
 });
 
-const GearModel = model<IGear>(GEAR, GearSchema);
+const GearModel: Model<IGear> = model<IGear>(GEAR, GearSchema);
 
 export default GearModel;

@@ -1,11 +1,13 @@
-const redis = require("redis");
 import { promisify } from "util";
+import redis from "redis";
 
-const redisClient = () => {
+const redisClient = (): any => {
     const redisUrl = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
     const client = redis.createClient(redisUrl);
-    client.hget = promisify(client.hget);
-    return client;
+    return {
+        ...client,
+        hget: promisify(client.hget),
+    };
 };
 
 export default redisClient;

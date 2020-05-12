@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Schema, model } from "mongoose";
+import { Schema, Model, model } from "mongoose";
 import { IDive } from "../types/modelTypes";
 import {
     INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT,
@@ -7,7 +7,7 @@ import {
 } from "../constants/errorCodes";
 import { USER, DIVE, CLUB, GEAR } from "../constants/resources";
 
-const DiveSchema = new Schema({
+const DiveSchema: Schema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
@@ -70,18 +70,20 @@ const processTime = (data: IDive): void => {
     }
 };
 
-DiveSchema.pre<IDive>("save", function (next) {
+DiveSchema.pre<IDive>("save", function (next): void {
     processTime(this);
     next();
 });
 
-DiveSchema.pre<IDive & { _update: IDive }>("findOneAndUpdate", function (next) {
+DiveSchema.pre<IDive & { _update: IDive }>("findOneAndUpdate", function (
+    next
+): void {
     if (this._update) {
         processTime(this._update);
     }
     next();
 });
 
-const DiveModel = model<IDive>(DIVE, DiveSchema);
+const DiveModel: Model<IDive> = model<IDive>(DIVE, DiveSchema);
 
 export default DiveModel;

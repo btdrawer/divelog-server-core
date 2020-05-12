@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Model, model } from "mongoose";
 import {
     USERNAME_EXISTS,
     EMAIL_EXISTS,
@@ -8,7 +8,7 @@ import { USER, DIVE, CLUB, GEAR } from "../constants/resources";
 import { signJwt, hashPassword, comparePassword } from "../utils/authUtils";
 import { IUser } from "../types/modelTypes";
 
-const UserSchema = new Schema({
+const UserSchema: Schema = new Schema({
     name: {
         type: String,
         required: true,
@@ -77,10 +77,10 @@ const UserSchema = new Schema({
     },
 });
 
-UserSchema.pre<IUser>("save", async function (next) {
-    if (this.isModified("password"))
+UserSchema.pre<IUser>("save", async function (next): Promise<void> {
+    if (this.isModified("password")) {
         this.password = hashPassword(this.password);
-
+    }
     if (this.isModified("username")) {
         const user = await UserModel.findOne({
             username: this.username,
@@ -88,7 +88,6 @@ UserSchema.pre<IUser>("save", async function (next) {
 
         if (user) throw new Error(USERNAME_EXISTS);
     }
-
     if (this.isModified("email")) {
         const user = await UserModel.findOne({
             email: this.email,
@@ -96,19 +95,16 @@ UserSchema.pre<IUser>("save", async function (next) {
 
         if (user) throw new Error(EMAIL_EXISTS);
     }
-
     this.token = signJwt(this._id);
-
     next();
 });
 
 UserSchema.pre<IUser & { _update: IUser }>("findOneAndUpdate", async function (
     next
-) {
+): Promise<void> {
     if (this._update.password) {
         this._update.password = hashPassword(this._update.password);
     }
-
     if (this._update.username) {
         const user = await UserModel.findOne({
             username: this._update.username,
@@ -116,31 +112,31 @@ UserSchema.pre<IUser & { _update: IUser }>("findOneAndUpdate", async function (
 
         if (user) throw new Error(USERNAME_EXISTS);
     }
-
     next();
 });
 
 UserSchema.statics.authenticate = async (
     username: string,
     password: string
-) => {
+): Promise<IUser> => {
     const user = await UserModel.findOne({
         username: username,
     });
-
-    const errorMessage = INVALID_AUTH;
-
-    if (!user) throw new Error(errorMessage);
-    else if (!comparePassword(password, user.password))
-        throw new Error(errorMessage);
-
+    if (!user) {
+        throw new Error(INVALID_AUTH);
+    }
+    if (!comparePassword(password, user.password)) {
+        throw new Error(INVALID_AUTH);
+    }
     user.token = signJwt(user._id);
     user.save();
-
     return user;
 };
 
-UserSchema.statics.add = async (myId: string, friendId: string) => {
+UserSchema.statics.add = async (
+    myId: string,
+    friendId: string
+): Promise<IUser | null> => {
     const user = await UserModel.findOneAndUpdate(
         {
             _id: myId,
@@ -152,7 +148,6 @@ UserSchema.statics.add = async (myId: string, friendId: string) => {
         },
         { new: true }
     );
-
     await UserModel.findOneAndUpdate(
         {
             _id: friendId,
@@ -163,11 +158,13 @@ UserSchema.statics.add = async (myId: string, friendId: string) => {
             },
         }
     );
-
     return user;
 };
 
-UserSchema.statics.accept = async (myId: string, friendId: string) => {
+UserSchema.statics.accept = async (
+    myId: string,
+    friendId: string
+): Promise<IUser | null> => {
     const user = await UserModel.findOneAndUpdate(
         {
             _id: myId,
@@ -182,7 +179,6 @@ UserSchema.statics.accept = async (myId: string, friendId: string) => {
         },
         { new: true }
     );
-
     await UserModel.findOneAndUpdate(
         {
             _id: friendId,
@@ -196,11 +192,13 @@ UserSchema.statics.accept = async (myId: string, friendId: string) => {
             },
         }
     );
-
     return user;
 };
 
-UserSchema.statics.unfriend = async (myId: string, friendId: string) => {
+UserSchema.statics.unfriend = async (
+    myId: string,
+    friendId: string
+): Promise<IUser | null> => {
     const user = await UserModel.findOneAndUpdate(
         {
             _id: myId,
@@ -212,7 +210,6 @@ UserSchema.statics.unfriend = async (myId: string, friendId: string) => {
         },
         { new: true }
     );
-
     await UserModel.findOneAndUpdate(
         {
             _id: friendId,
@@ -223,10 +220,9 @@ UserSchema.statics.unfriend = async (myId: string, friendId: string) => {
             },
         }
     );
-
     return user;
 };
 
-const UserModel = model<IUser>(USER, UserSchema);
+const UserModel: Model<IUser> = model<IUser>(USER, UserSchema);
 
 export default UserModel;
