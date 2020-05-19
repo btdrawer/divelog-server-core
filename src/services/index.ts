@@ -1,32 +1,29 @@
-import cache from "./cache";
-import createRedisClient from "./redis";
-import mongoose, { Connection } from "mongoose";
+import getMongooseConnection from "./mongoose";
+import { createClient, getQueryWithCache, getClearCache } from "./redis";
+import { Connection } from "mongoose";
 
-const connect = async (): Promise<{
-    db: Connection;
-    redisClient: any;
+export default async (): Promise<{
+    mongoose: Connection;
+    queryWithCache: Function;
+    clearCache: Function;
 }> => {
-    await mongoose.connect(<string>process.env.MONGODB_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-    });
+    const mongoose = await getMongooseConnection();
 
-    const db = mongoose.connection;
-    console.log("Database connection opened.");
-
-    const redisClient = createRedisClient();
-    cache(redisClient);
+    const redisClient = createClient();
+    const queryWithCache = getQueryWithCache(redisClient);
+    const clearCache = getClearCache(redisClient);
     console.log("Redis client set up.");
 
-    db.on("error", (err: any) => console.log(err));
-    db.on("close", () => {
+    mongoose.on("error", (err: any) => console.log(err));
+    mongoose.on("close", () => {
         console.log("Database connection closed.");
         redisClient.quit();
         console.log("Redis client closed.");
     });
 
-    return { db, redisClient };
+    return {
+        mongoose,
+        queryWithCache,
+        clearCache,
+    };
 };
-
-export default connect;
