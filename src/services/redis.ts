@@ -1,15 +1,13 @@
-import { promisify } from "util";
 import { Model } from "mongoose";
-const redis = require("redis");
+import redis, { RedisClient } from "redis";
 
-export const createClient = (): any => {
+export const createClient = (): RedisClient => {
     const redisUrl = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
     const client = redis.createClient(redisUrl);
-    client.hget = promisify(client.hget);
     return client;
 };
 
-export const getQueryWithCache = (redisClient: any) => async (
+export const getQueryWithCache = (redisClient: RedisClient) => async (
     useCache: boolean,
     hashKey: string,
     queryProps: { model: Model<any>; filter: any; fields: any; options: any }
@@ -23,7 +21,9 @@ export const getQueryWithCache = (redisClient: any) => async (
         fields,
         options,
     });
-    const cachedData = await redisClient.hget(hashKey, key);
+    const cachedData: string = await new Promise((resolve) =>
+        redisClient.hget(hashKey, key, (err: any, res: string) => resolve(res))
+    );
     if (cachedData) {
         return JSON.parse(cachedData);
     }
@@ -32,5 +32,5 @@ export const getQueryWithCache = (redisClient: any) => async (
     return result;
 };
 
-export const getClearCache = (redisClient: any) => (hashKey: string) =>
+export const getClearCache = (redisClient: RedisClient) => (hashKey: string) =>
     redisClient.del(hashKey);

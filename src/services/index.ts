@@ -1,10 +1,11 @@
 import getMongooseConnection from "./mongoose";
-import { createClient, getQueryWithCache, getClearCache } from "./redis";
 import { Connection } from "mongoose";
+import { createClient, getQueryWithCache, getClearCache } from "./redis";
+import { RedisClient } from "redis";
 
 export const getCloseServices = (
     mongoose: Connection,
-    redisClient: any
+    redisClient: RedisClient
 ) => async (): Promise<any> => {
     mongoose.close();
 
