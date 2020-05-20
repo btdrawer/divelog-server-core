@@ -2,7 +2,7 @@ import * as resources from "./constants/resources";
 import * as errorCodes from "./constants/errorCodes";
 import * as subscriptionKeys from "./constants/subscriptionKeys";
 
-import connect from "./services";
+import { launchServices } from "./services";
 
 import { signJwt, hashPassword, comparePassword } from "./utils/authUtils";
 
@@ -24,7 +24,7 @@ export {
     resources,
     errorCodes,
     subscriptionKeys,
-    connect,
+    launchServices,
     models,
     signJwt,
     hashPassword,

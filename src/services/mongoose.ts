@@ -6,8 +6,11 @@ const getMongooseConnection = async (): Promise<Connection> => {
         useUnifiedTopology: true,
         useFindAndModify: false,
     });
+    const { connection } = mongoose;
     console.log("Database connection opened.");
-    return mongoose.connection;
+    connection.on("error", (err: any) => console.log(err));
+    connection.on("close", () => console.log("Database connection closed."));
+    return connection;
 };
 
 export default getMongooseConnection;

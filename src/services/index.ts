@@ -2,10 +2,24 @@ import getMongooseConnection from "./mongoose";
 import { createClient, getQueryWithCache, getClearCache } from "./redis";
 import { Connection } from "mongoose";
 
-export default async (): Promise<{
-    mongoose: Connection;
-    queryWithCache: Function;
-    clearCache: Function;
+export const getCloseServices = (
+    mongoose: Connection,
+    redisClient: any
+) => async (): Promise<any> => {
+    mongoose.close();
+
+    redisClient.quit();
+    console.log("Redis client closed.");
+
+    return undefined;
+};
+
+export const launchServices = async (): Promise<{
+    cacheFunctions: {
+        queryWithCache: Function;
+        clearCache: Function;
+    };
+    closeServices: Function;
 }> => {
     const mongoose = await getMongooseConnection();
 
@@ -14,16 +28,13 @@ export default async (): Promise<{
     const clearCache = getClearCache(redisClient);
     console.log("Redis client set up.");
 
-    mongoose.on("error", (err: any) => console.log(err));
-    mongoose.on("close", () => {
-        console.log("Database connection closed.");
-        redisClient.quit();
-        console.log("Redis client closed.");
-    });
+    const closeServices = getCloseServices(mongoose, redisClient);
 
     return {
-        mongoose,
-        queryWithCache,
-        clearCache,
+        cacheFunctions: {
+            queryWithCache,
+            clearCache,
+        },
+        closeServices,
     };
 };
