@@ -16,6 +16,8 @@ export const getCloseServices = (
 };
 
 export const launchServices = async (): Promise<{
+    mongoose: Connection;
+    redisClient: RedisClient;
     cacheFunctions: {
         queryWithCache: Function;
         clearCache: Function;
@@ -32,6 +34,8 @@ export const launchServices = async (): Promise<{
     const closeServices = getCloseServices(mongoose, redisClient);
 
     return {
+        mongoose,
+        redisClient,
         cacheFunctions: {
             queryWithCache,
             clearCache,
