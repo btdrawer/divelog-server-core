@@ -8,6 +8,7 @@ export const getCloseServices = (
     redisClient: RedisClient
 ) => async (): Promise<any> => {
     mongoose.close();
+    console.log("Database connection closed.");
 
     redisClient.quit();
     console.log("Redis client closed.");
@@ -25,6 +26,7 @@ export const launchServices = async (): Promise<{
     closeServices: Function;
 }> => {
     const mongoose = await getMongooseConnection();
+    console.log("Database connection opened.");
 
     const redisClient = createClient();
     const queryWithCache = getQueryWithCache(redisClient);

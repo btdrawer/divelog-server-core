@@ -7,9 +7,7 @@ const getMongooseConnection = async (): Promise<Connection> => {
         useFindAndModify: false,
     });
     const { connection } = mongoose;
-    console.log("Database connection opened.");
     connection.on("error", (err: any) => console.log(err));
-    connection.on("close", () => console.log("Database connection closed."));
     return connection;
 };
 

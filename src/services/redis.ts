@@ -25,7 +25,10 @@ export const getQueryWithCache = (redisClient: RedisClient) => async (
         redisClient.hget(hashKey, key, (err: any, res: string) => resolve(res))
     );
     if (cachedData) {
-        return JSON.parse(cachedData);
+        const parsedCachedData = JSON.parse(cachedData);
+        return Array.isArray(parsedCachedData)
+            ? parsedCachedData.map((elem) => new model(elem))
+            : new model(parsedCachedData);
     }
     const result = await model.find(filter, fields, options);
     redisClient.hset(hashKey, key, JSON.stringify(result));
