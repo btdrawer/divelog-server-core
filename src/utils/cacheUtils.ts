@@ -1,13 +1,12 @@
 import { Model } from "mongoose";
-import redis, { RedisClient } from "redis";
+import { RedisClient } from "redis";
 
-export const createClient = (): RedisClient => {
-    const redisUrl = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
-    const client = redis.createClient(redisUrl);
-    return client;
-};
+export interface CacheUtils {
+    queryWithCache: Function;
+    clearCache: Function;
+}
 
-export const getQueryWithCache = (redisClient: RedisClient) => async (
+const getQueryWithCache = (redisClient: RedisClient) => async (
     useCache: boolean,
     hashKey: string,
     queryProps: { model: Model<any>; filter: any; fields: any; options: any }
@@ -35,5 +34,12 @@ export const getQueryWithCache = (redisClient: RedisClient) => async (
     return result;
 };
 
-export const getClearCache = (redisClient: RedisClient) => (hashKey: string) =>
+const getClearCache = (redisClient: RedisClient) => (hashKey: string) =>
     redisClient.del(hashKey);
+
+const getCacheUtils = (redisClient: RedisClient): CacheUtils => ({
+    queryWithCache: getQueryWithCache(redisClient),
+    clearCache: getClearCache(redisClient),
+});
+
+export default getCacheUtils;

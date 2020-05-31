@@ -29,23 +29,21 @@ const GroupSchema: Schema = new Schema({
 });
 
 GroupSchema.methods.addUser = async function (user_id: string): Promise<void> {
-    if (!this.participants.includes(user_id)) {
-        this.participants.push(user_id);
-        await this.save();
-    } else {
+    if (this.participants.includes(user_id)) {
         throw new Error(USER_ALREADY_IN_GROUP);
     }
+    this.participants.push(user_id);
+    await this.save();
 };
 
 GroupSchema.methods.leave = async function (user_id: string): Promise<void> {
-    let index;
-    for (let i = 0; i < this.participants.length; i++) {
-        if (this.participants[i].toString() === user_id) index = i;
-    }
-    if (!index) {
+    const participantIndex = this.participants.findIndex(
+        (participant: string) => participant.toString() === user_id
+    );
+    if (participantIndex < 0) {
         throw new Error(NOT_FOUND);
     }
-    this.participants[index] = undefined;
+    this.participants[participantIndex] = undefined;
     await this.save();
 };
 

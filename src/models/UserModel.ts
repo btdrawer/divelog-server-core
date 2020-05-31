@@ -137,10 +137,8 @@ UserSchema.statics.add = async (
     myId: string,
     friendId: string
 ): Promise<IUser | null> => {
-    const user = await UserModel.findOneAndUpdate(
-        {
-            _id: myId,
-        },
+    const user = await UserModel.findByIdAndUpdate(
+        myId,
         {
             $push: {
                 "friendRequests.sent": friendId,
@@ -148,16 +146,11 @@ UserSchema.statics.add = async (
         },
         { new: true }
     );
-    await UserModel.findOneAndUpdate(
-        {
-            _id: friendId,
+    await UserModel.findByIdAndUpdate(friendId, {
+        $push: {
+            "friendRequests.inbox": myId,
         },
-        {
-            $push: {
-                "friendRequests.inbox": myId,
-            },
-        }
-    );
+    });
     return user;
 };
 
@@ -165,10 +158,8 @@ UserSchema.statics.accept = async (
     myId: string,
     friendId: string
 ): Promise<IUser | null> => {
-    const user = await UserModel.findOneAndUpdate(
-        {
-            _id: myId,
-        },
+    const user = await UserModel.findByIdAndUpdate(
+        myId,
         {
             $push: {
                 friends: friendId,
@@ -179,19 +170,14 @@ UserSchema.statics.accept = async (
         },
         { new: true }
     );
-    await UserModel.findOneAndUpdate(
-        {
-            _id: friendId,
+    await UserModel.findByIdAndUpdate(friendId, {
+        $push: {
+            friends: myId,
         },
-        {
-            $push: {
-                friends: myId,
-            },
-            $pull: {
-                "friendRequests.sent": myId,
-            },
-        }
-    );
+        $pull: {
+            "friendRequests.sent": myId,
+        },
+    });
     return user;
 };
 
@@ -199,10 +185,8 @@ UserSchema.statics.unfriend = async (
     myId: string,
     friendId: string
 ): Promise<IUser | null> => {
-    const user = await UserModel.findOneAndUpdate(
-        {
-            _id: myId,
-        },
+    const user = await UserModel.findByIdAndUpdate(
+        myId,
         {
             $pull: {
                 friends: friendId,
@@ -210,16 +194,11 @@ UserSchema.statics.unfriend = async (
         },
         { new: true }
     );
-    await UserModel.findOneAndUpdate(
-        {
-            _id: friendId,
+    await UserModel.findByIdAndUpdate(friendId, {
+        $pull: {
+            friends: myId,
         },
-        {
-            $pull: {
-                friends: myId,
-            },
-        }
-    );
+    });
     return user;
 };
 

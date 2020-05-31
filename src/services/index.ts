@@ -1,7 +1,7 @@
-import getMongooseConnection from "./mongoose";
 import { Connection } from "mongoose";
-import { createClient, getQueryWithCache, getClearCache } from "./redis";
 import { RedisClient } from "redis";
+import getMongooseConnection from "./mongoose";
+import getCacheService, { CacheService } from "./cacheService";
 
 export const getCloseServices = (
     mongoose: Connection,
@@ -18,30 +18,20 @@ export const getCloseServices = (
 
 export const launchServices = async (): Promise<{
     mongoose: Connection;
-    redisClient: RedisClient;
-    cacheFunctions: {
-        queryWithCache: Function;
-        clearCache: Function;
-    };
+    cache: CacheService;
     closeServices: Function;
 }> => {
     const mongoose = await getMongooseConnection();
     console.log("Database connection opened.");
 
-    const redisClient = createClient();
-    const queryWithCache = getQueryWithCache(redisClient);
-    const clearCache = getClearCache(redisClient);
+    const cache = getCacheService();
     console.log("Redis client set up.");
 
-    const closeServices = getCloseServices(mongoose, redisClient);
+    const closeServices = getCloseServices(mongoose, cache.redisClient);
 
     return {
         mongoose,
-        redisClient,
-        cacheFunctions: {
-            queryWithCache,
-            clearCache,
-        },
+        cache,
         closeServices,
     };
 };
