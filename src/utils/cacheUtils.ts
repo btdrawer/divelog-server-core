@@ -7,12 +7,11 @@ export interface CacheUtils {
 }
 
 const getQueryWithCache = (redisClient: RedisClient) => async (
-    useCache: boolean,
     hashKey: string,
     queryProps: { model: Model<any>; filter: any; fields: any; options: any }
 ): Promise<any> => {
     const { model, filter, fields, options } = queryProps;
-    if (!useCache) {
+    if (!hashKey) {
         return model.find(filter, fields, options);
     }
     const key = JSON.stringify({
