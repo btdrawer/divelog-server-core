@@ -1,22 +1,20 @@
 import redis, { RedisClient } from "redis";
-import getCacheUtils, { CacheUtils } from "../utils/cacheUtils";
+import CacheUtils from "./CacheUtils";
 
-export interface CacheService {
+class CacheService {
     redisClient: RedisClient;
     cacheUtils: CacheUtils;
+
+    constructor() {
+        this.redisClient = this.createClient();
+        this.cacheUtils = new CacheUtils(this.redisClient);
+    }
+
+    private createClient(): RedisClient {
+        return redis.createClient(
+            `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
+        );
+    }
 }
 
-const createClient = (): RedisClient =>
-    redis.createClient(
-        `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
-    );
-
-const getCacheService = (): CacheService => {
-    const redisClient = createClient();
-    return {
-        redisClient,
-        cacheUtils: getCacheUtils(redisClient),
-    };
-};
-
-export default getCacheService;
+export default CacheService;
