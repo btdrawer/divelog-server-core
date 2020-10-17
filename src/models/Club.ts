@@ -7,23 +7,25 @@ const { USER, CLUB } = resources;
 export interface ClubDocument extends Document {
     name: string;
     location: string;
+    managers: UserDocument[] | string[];
+    members: UserDocument[] | string[];
     description?: string;
-    managers: UserDocument[];
-    members: UserDocument[];
     website?: string;
 }
 
 export interface CreateClubInput {
-    name: string;
-    location: string;
-    managers: string[];
-    website?: string;
+    name: ClubDocument["name"];
+    location: ClubDocument["location"];
+    managers: ClubDocument["managers"];
+    description?: ClubDocument["description"];
+    website?: ClubDocument["website"];
 }
 
 export interface UpdateClubInput extends UpdateQuery<ClubDocument> {
-    name?: string;
-    location?: string;
-    website?: string;
+    name?: ClubDocument["name"];
+    location?: ClubDocument["location"];
+    description?: ClubDocument["description"];
+    website?: ClubDocument["website"];
 }
 
 export interface IClub
@@ -77,22 +79,19 @@ const ClubSchema: Schema = new Schema({
 const ClubModel = model<ClubDocument>(CLUB, ClubSchema);
 
 const Club: IClub = {
-    ...resourceFactory(ClubModel),
-
-    async create(data: CreateClubInput) {
-        const club = await new ClubModel(data).save();
-        await User.update(data.managers[0], {
-            $push: {
-                "clubs.manager": club.id,
-            },
-        });
-        return club;
-    },
+    ...resourceFactory(ClubModel, {
+        async create(club: ClubDocument) {
+            await User.update(<string>club.managers[0], {
+                $push: {
+                    "clubs.manager": club.id,
+                },
+            });
+        },
+    }),
 
     async addManager(clubId: string, managerId: string) {
-        const club = this.update(clubId, {
+        const club = await this.update(clubId, {
             $push: {
-                //@ts-ignore
                 managers: managerId,
             },
         });
@@ -105,7 +104,7 @@ const Club: IClub = {
     },
 
     async removeManager(clubId: string, managerId: string) {
-        const club = this.update(clubId, {
+        const club = await this.update(clubId, {
             $pull: {
                 managers: managerId,
             },
@@ -119,9 +118,8 @@ const Club: IClub = {
     },
 
     async addMember(clubId: string, memberId: string) {
-        const club = this.update(clubId, {
+        const club = await this.update(clubId, {
             $push: {
-                //@ts-ignore
                 members: memberId,
             },
         });
@@ -134,7 +132,7 @@ const Club: IClub = {
     },
 
     async removeMember(clubId: string, memberId: string) {
-        const club = this.update(clubId, {
+        const club = await this.update(clubId, {
             $pull: {
                 members: memberId,
             },
@@ -150,8 +148,8 @@ const Club: IClub = {
     async delete(id: string) {
         await User.updateMany(
             {
-                $in: {
-                    "clubs.manager": id,
+                "clubs.manager": {
+                    $in: id,
                 },
             },
             {
@@ -162,8 +160,8 @@ const Club: IClub = {
         );
         await User.updateMany(
             {
-                $in: {
-                    "clubs.member": id,
+                "clubs.member": {
+                    $in: id,
                 },
             },
             {

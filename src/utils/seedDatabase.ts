@@ -131,6 +131,7 @@ export const clubs: TestData<any, documentTypes.ClubDocument> = [
         input: {
             name: "A",
             location: "B",
+            description: "C",
             website: "example.com",
         },
         output: undefined,
@@ -139,6 +140,7 @@ export const clubs: TestData<any, documentTypes.ClubDocument> = [
         input: {
             name: "X",
             location: "Y",
+            description: "Z",
             website: "example.co.uk",
         },
         output: undefined,
@@ -265,12 +267,12 @@ const saveGroup = async (
     return group;
 };
 
-export const seedDatabase = async (resources: {
+export const seedDatabase = (resources: {
     dives?: true;
     clubs?: true;
     gear?: true;
     groups?: true;
-}) => {
+}) => async (done: any) => {
     await mongoose.connection.db.dropDatabase();
 
     // Example users
@@ -336,4 +338,6 @@ export const seedDatabase = async (resources: {
             _.get(users[1], "output.id"),
         ]);
     }
+
+    done();
 };

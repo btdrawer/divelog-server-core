@@ -4,11 +4,11 @@ import { seedDatabase, users } from "../src/utils/seedDatabase";
 import { User, comparePassword } from "../src";
 
 describe("User", () => {
-    beforeAll(async () => await connect());
-    afterAll(async () => await disconnect());
-    beforeEach(async () => await seedDatabase({}));
+    beforeAll(connect);
+    afterAll(disconnect);
+    beforeEach(seedDatabase({}));
 
-    test("Should create a new user", async () => {
+    test("Should create a new user", async (done: any) => {
         const user = await User.create({
             name: "Ben",
             username: "ben",
@@ -19,9 +19,10 @@ describe("User", () => {
         expect(user.username).toEqual("ben");
         expect(user.email).toEqual("ben@example.com");
         expect(comparePassword("Password222", user.password)).toEqual(true);
+        done();
     });
 
-    test("Should fail to create a new user if username is taken", async () => {
+    test("Should fail to create a new user if username is taken", async (done: any) => {
         await expect(
             async () =>
                 await User.create({
@@ -31,9 +32,10 @@ describe("User", () => {
                     password: "Password222",
                 })
         ).rejects.toThrow("A user with that username already exists.");
+        done();
     });
 
-    test("Should fail to create a new user if email address is taken", async () => {
+    test("Should fail to create a new user if email address is taken", async (done: any) => {
         await expect(
             async () =>
                 await User.create({
@@ -43,9 +45,10 @@ describe("User", () => {
                     password: "Password222",
                 })
         ).rejects.toThrow("A user with that email address already exists.");
+        done();
     });
 
-    test("Should login with correct credentials", async () => {
+    test("Should login with correct credentials", async (done: any) => {
         const user = await User.login(
             users[0].input.username,
             users[0].input.password
@@ -60,23 +63,26 @@ describe("User", () => {
         } else {
             expect(user).not.toBeNull();
         }
+        done();
     });
 
-    test("Should fail to login if user is not found", async () => {
+    test("Should fail to login if user is not found", async (done: any) => {
         await expect(
             async () =>
                 await User.login("fakeusername", users[0].input.password)
         ).rejects.toThrow("Your username and/or password were incorrect.");
+        done();
     });
 
-    test("Should fail to login if password is incorrect", async () => {
+    test("Should fail to login if password is incorrect", async (done: any) => {
         await expect(
             async () =>
                 await User.login(users[0].input.username, "fakepassword")
         ).rejects.toThrow("Your username and/or password were incorrect.");
+        done();
     });
 
-    test("Should update user", async () => {
+    test("Should update user", async (done: any) => {
         const user = await User.update(get(users[0], "output.id"), {
             name: "New name",
             username: "newusername",
@@ -91,9 +97,10 @@ describe("User", () => {
         } else {
             expect(user).not.toBeNull();
         }
+        done();
     });
 
-    test("Should fail to update user if new username is taken", async () => {
+    test("Should fail to update user if new username is taken", async (done: any) => {
         await expect(
             async () =>
                 await User.update(get(users[0], "output.id"), {
@@ -103,9 +110,10 @@ describe("User", () => {
                     password: "Updated222",
                 })
         ).rejects.toThrow("A user with that username already exists.");
+        done();
     });
 
-    test("Should fail to update user if new email address is taken", async () => {
+    test("Should fail to update user if new email address is taken", async (done: any) => {
         await expect(
             async () =>
                 await User.update(get(users[0], "output.id"), {
@@ -115,9 +123,10 @@ describe("User", () => {
                     password: "Updated222",
                 })
         ).rejects.toThrow("A user with that email address already exists.");
+        done();
     });
 
-    test("Should add another user as a friend", async () => {
+    test("Should add another user as a friend", async (done: any) => {
         const sender = await User.add(
             get(users[0], "output.id"),
             get(users[1], "output.id")
@@ -135,9 +144,10 @@ describe("User", () => {
             expect(sender).not.toBeNull();
             expect(recipient).not.toBeNull();
         }
+        done();
     });
 
-    test("Should accept another user as a friend", async () => {
+    test("Should accept another user as a friend", async (done: any) => {
         await User.add(get(users[0], "output.id"), get(users[1], "output.id"));
         const user = await User.accept(
             get(users[1], "output.id"),
@@ -151,9 +161,10 @@ describe("User", () => {
         } else {
             expect(user).not.toBeNull();
         }
+        done();
     });
 
-    test("Should unfriend another user", async () => {
+    test("Should unfriend another user", async (done: any) => {
         await User.add(get(users[0], "output.id"), get(users[1], "output.id"));
         await User.accept(
             get(users[1], "output.id"),
@@ -169,9 +180,10 @@ describe("User", () => {
         } else {
             expect(user).not.toBeNull();
         }
+        done();
     });
 
-    test("Should delete a user", async () => {
+    test("Should delete a user", async (done: any) => {
         const user = await User.delete(get(users[0], "output.id"));
         const checkUserIsDeleted = await User.get(get(users[0], "output.id"));
         if (user) {
@@ -187,5 +199,6 @@ describe("User", () => {
         } else {
             expect(user).not.toBeNull();
         }
+        done();
     });
 });

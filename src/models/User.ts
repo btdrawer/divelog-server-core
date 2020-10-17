@@ -54,7 +54,7 @@ export interface UpdateUserInput extends UpdateQuery<UserDocument> {
 export interface IUser
     extends IResource<UserDocument, CreateUserInput, UpdateUserInput> {
     login(username: string, password: string): Promise<UserDocument | null>;
-    updateMany: any;
+    updateMany(filter: any, payload: any): Promise<UserDocument[]>;
     add(user: string, friend: string): Promise<UserDocument | null>;
     accept(user: string, friend: string): Promise<UserDocument | null>;
     unfriend(user: string, friend: string): Promise<UserDocument | null>;
@@ -161,6 +161,12 @@ UserSchema.pre<UserDocument & { _update: UserDocument }>(
             });
             if (user) throw new Error(USERNAME_EXISTS);
         }
+        if (this._update.email) {
+            const user = await UserModel.findOne({
+                email: this._update.email,
+            });
+            if (user) throw new Error(EMAIL_EXISTS);
+        }
         next();
     }
 );
@@ -181,11 +187,13 @@ const User: IUser = {
             throw new Error(INVALID_AUTH);
         }
         user.token = signJwt(user._id);
-        user.save();
+        await user.save();
         return user;
     },
 
-    updateMany: UserModel.updateMany,
+    async updateMany(filter: any, payload: any) {
+        return UserModel.updateMany(filter, payload);
+    },
 
     async add(user: string, friend: string) {
         const updatedUser = await this.update(user, {
