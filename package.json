@@ -11,7 +11,8 @@
         "build": "tsc",
         "prepare": "npm run build",
         "lint": "eslint --fix .",
-        "test": "env-cmd -f ./.env jest --runInBand --forceExit"
+        "test": "env-cmd -f ./.env jest --runInBand --forceExit",
+        "test:ci": "jest --runInBand --forceExit"
     },
     "dependencies": {
         "bcrypt": "^5.0.0",
