@@ -1,7 +1,7 @@
 {
     "name": "@btdrawer/divelog-server-core",
     "version": "1.0.0",
-    "description": "",
+    "description": "Common code for [divelog-server-rest](https://github.com/btdrawer/divelog-server-rest) and [divelog-server-graphql](https://github.com/btdrawer/divelog-server-graphql).",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "keywords": [],
@@ -36,5 +36,16 @@
         "prettier": "^2.0.5",
         "ts-jest": "^26.4.1",
         "typescript": "^3.8.3"
-    }
+    },
+    "directories": {
+        "test": "tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/btdrawer/divelog-server-core.git"
+    },
+    "bugs": {
+        "url": "https://github.com/btdrawer/divelog-server-core/issues"
+    },
+    "homepage": "https://github.com/btdrawer/divelog-server-core#readme"
 }
