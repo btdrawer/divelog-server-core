@@ -168,10 +168,10 @@ export const gear: TestData<any, documentTypes.GearDocument> = [
     },
     {
         input: {
-            name: "X",
-            brand: "Y",
-            model: "Z",
-            type: "W",
+            name: "1",
+            brand: "2",
+            model: "3",
+            type: "4",
         },
         output: undefined,
     },

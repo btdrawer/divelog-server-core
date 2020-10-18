@@ -38,17 +38,17 @@ export interface IUserModel extends Model<UserDocument> {
 }
 
 export interface CreateUserInput {
-    name: string;
-    username: string;
-    email: string;
-    password: string;
+    name: UserDocument["name"];
+    username: UserDocument["username"];
+    email: UserDocument["email"];
+    password: UserDocument["password"];
 }
 
 export interface UpdateUserInput extends UpdateQuery<UserDocument> {
-    name?: string;
-    username?: string;
-    email?: string;
-    password?: string;
+    name?: UserDocument["name"];
+    username?: UserDocument["username"];
+    email?: UserDocument["email"];
+    password?: UserDocument["password"];
 }
 
 export interface IUser

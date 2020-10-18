@@ -33,35 +33,35 @@ export interface DiveDocument extends Document {
 }
 
 export interface CreateDiveInput {
-    user?: UserDocument;
-    public?: boolean;
-    timeIn?: Date;
-    timeOut?: Date;
-    bottomTime?: number;
-    safetyStopTime?: number;
-    diveTime?: number;
-    maxDepth?: number;
-    location?: string;
-    description?: string;
-    club?: ClubDocument;
-    buddies?: UserDocument[];
-    gear?: GearDocument[];
+    user?: DiveDocument["user"];
+    public?: DiveDocument["public"];
+    timeIn?: DiveDocument["timeIn"];
+    timeOut?: DiveDocument["timeOut"];
+    bottomTime?: DiveDocument["bottomTime"];
+    safetyStopTime?: DiveDocument["safetyStopTime"];
+    diveTime?: DiveDocument["diveTime"];
+    maxDepth?: DiveDocument["maxDepth"];
+    location?: DiveDocument["location"];
+    description?: DiveDocument["description"];
+    club?: DiveDocument["club"];
+    buddies?: DiveDocument["buddies"];
+    gear?: DiveDocument["gear"];
 }
 
 export interface UpdateDiveInput extends UpdateQuery<DiveDocument> {
-    user?: UserDocument;
-    public?: boolean;
-    timeIn?: Date;
-    timeOut?: Date;
-    bottomTime?: number;
-    safetyStopTime?: number;
-    diveTime?: number;
-    maxDepth?: number;
-    location?: string;
-    description?: string;
-    club?: ClubDocument;
-    buddies?: UserDocument[];
-    gear?: GearDocument[];
+    user?: DiveDocument["user"];
+    public?: DiveDocument["public"];
+    timeIn?: DiveDocument["timeIn"];
+    timeOut?: DiveDocument["timeOut"];
+    bottomTime?: DiveDocument["bottomTime"];
+    safetyStopTime?: DiveDocument["safetyStopTime"];
+    diveTime?: DiveDocument["diveTime"];
+    maxDepth?: DiveDocument["maxDepth"];
+    location?: DiveDocument["location"];
+    description?: DiveDocument["description"];
+    club?: DiveDocument["club"];
+    buddies?: DiveDocument["buddies"];
+    gear?: DiveDocument["gear"];
 }
 
 export interface IDive
@@ -154,7 +154,7 @@ const DiveModel = model<DiveDocument>(DIVE, DiveSchema);
 
 const Dive: IDive = {
     ...resourceFactory(DiveModel, {
-        create: async (dive: DiveDocument) => {
+        async create(dive: DiveDocument) {
             await User.update(dive.user.id, {
                 $push: {
                     dives: dive.id,
@@ -162,7 +162,7 @@ const Dive: IDive = {
             });
         },
 
-        delete: async (dive: DiveDocument) => {
+        async delete(dive: DiveDocument) {
             await User.update(dive.user.id, {
                 $pull: {
                     dives: dive ? dive.id : null,

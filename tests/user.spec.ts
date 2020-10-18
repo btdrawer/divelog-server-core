@@ -1,12 +1,16 @@
 import { get } from "lodash";
 import { connect, disconnect } from "./utils/setup";
-import { seedDatabase, users } from "../src/utils/seedDatabase";
+import { seedDatabase, users, gear } from "../src/utils/seedDatabase";
 import { User, comparePassword } from "../src";
 
 describe("User", () => {
     beforeAll(connect);
     afterAll(disconnect);
-    beforeEach(seedDatabase({}));
+    beforeEach(
+        seedDatabase({
+            gear: true,
+        })
+    );
 
     test("Should create a new user", async (done: any) => {
         const user = await User.create({
@@ -79,6 +83,75 @@ describe("User", () => {
             async () =>
                 await User.login(users[0].input.username, "fakepassword")
         ).rejects.toThrow("Your username and/or password were incorrect.");
+        done();
+    });
+
+    test("Should get a list of users", async (done: any) => {
+        const retrievedUsers = await User.find();
+        if (retrievedUsers) {
+            expect(retrievedUsers.length).toEqual(4);
+            const exampleUser = retrievedUsers[0];
+            expect(exampleUser.name).toEqual(users[0].input.name);
+            expect(exampleUser.username).toEqual(users[0].input.username);
+            expect(exampleUser.email).toEqual(users[0].input.email);
+        } else {
+            expect(retrievedUsers).not.toBeNull();
+        }
+        done();
+    });
+
+    test("Should get a list of users with filter", async (done: any) => {
+        const retrievedUsers = await User.find({
+            name: users[1].input.name,
+        });
+        if (retrievedUsers) {
+            expect(retrievedUsers.length).toEqual(1);
+            const exampleUser = retrievedUsers[0];
+            expect(exampleUser.name).toEqual(users[1].input.name);
+            expect(exampleUser.username).toEqual(users[1].input.username);
+            expect(exampleUser.email).toEqual(users[1].input.email);
+        } else {
+            expect(retrievedUsers).not.toBeNull();
+        }
+        done();
+    });
+
+    test("Should get a list of users and return only specific fields", async (done: any) => {
+        const retrievedUsers = await User.find({}, ["name"]);
+        if (retrievedUsers) {
+            expect(retrievedUsers.length).toEqual(4);
+            const exampleUser = retrievedUsers[0];
+            expect(exampleUser.name).toEqual(users[0].input.name);
+            expect(exampleUser.username).toBeUndefined();
+        } else {
+            expect(retrievedUsers).not.toBeNull();
+        }
+        done();
+    });
+
+    test("Should get user by their ID", async (done: any) => {
+        const user = await User.get(get(users[0], "output.id"));
+        if (user) {
+            expect(user.name).toEqual(users[0].input.name);
+            expect(user.username).toEqual(users[0].input.username);
+            expect(user.email).toEqual(users[0].input.email);
+        } else {
+            expect(user).not.toBeNull();
+        }
+        done();
+    });
+
+    test("Should populate specified fields", async (done: any) => {
+        const user = await User.get(get(users[0], "output.id"), ["gear"]);
+        if (user) {
+            expect(user.gear.length).toEqual(2);
+            const exampleGear = user.gear[0];
+            expect(exampleGear).toHaveProperty("name");
+            expect(exampleGear).toHaveProperty("model");
+            expect(exampleGear).toHaveProperty("brand");
+        } else {
+            expect(user).not.toBeNull();
+        }
         done();
     });
 

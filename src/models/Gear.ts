@@ -9,19 +9,20 @@ export interface GearDocument extends Document {
     _model?: string;
     brand?: string;
     type?: string;
-    owner: UserDocument;
+    owner: UserDocument | string;
 }
 
 export interface CreateGearInput {
     name?: GearDocument["name"];
-    _model?: GearDocument["_model"];
+    model?: GearDocument["_model"];
     brand?: GearDocument["brand"];
     type?: GearDocument["type"];
+    owner: GearDocument["owner"];
 }
 
 export interface UpdateGearInput extends UpdateQuery<GearDocument> {
     name?: GearDocument["name"];
-    _model?: GearDocument["_model"];
+    model?: GearDocument["_model"];
     brand?: GearDocument["brand"];
     type?: GearDocument["type"];
 }
@@ -57,7 +58,7 @@ const Gear: IResource<
     UpdateGearInput
 > = resourceFactory(GearModel, {
     async create(gear: GearDocument) {
-        await User.update(gear.owner.id, {
+        await User.update(<string>gear.owner, {
             $push: {
                 gear: gear.id,
             },
@@ -65,7 +66,7 @@ const Gear: IResource<
     },
 
     async delete(gear: GearDocument) {
-        await User.update(gear.owner.id, {
+        await User.update(<string>gear.owner, {
             $pull: {
                 gear: gear.id,
             },

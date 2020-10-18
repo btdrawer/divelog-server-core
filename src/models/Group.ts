@@ -5,27 +5,27 @@ import resourceFactory from "./utils/resourceFactory";
 const { USER, GROUP } = resources;
 const { USER_ALREADY_IN_GROUP, NOT_FOUND } = errorCodes;
 
-export interface MessageDocument extends Document {
+export interface MessageDocument {
     text: string;
-    sender: UserDocument;
+    sender: UserDocument | string;
 }
 
 export interface GroupDocument extends Document {
     name: string;
-    participants: UserDocument[];
+    participants: UserDocument[] | string[];
     messages: MessageDocument[];
 }
 
 export interface CreateGroupInput {
     name: GroupDocument["name"];
     participants: GroupDocument["participants"];
-    messages: GroupDocument["messages"];
+    messages: MessageDocument[];
 }
 
 export interface UpdateGroupInput extends UpdateQuery<GroupDocument> {
     name?: GroupDocument["name"];
     participants?: GroupDocument["participants"];
-    messages?: GroupDocument["messages"];
+    messages?: MessageDocument[];
 }
 
 export interface IGroup
@@ -73,7 +73,9 @@ const Group: IGroup = {
         if (!doc) {
             throw new Error(NOT_FOUND);
         }
-        const alreadyAMember = doc.participants.some((p) => p.id === user);
+        const alreadyAMember = doc.participants.some(
+            (p: UserDocument | string) => <string>p === user
+        );
         if (alreadyAMember) {
             throw new Error(USER_ALREADY_IN_GROUP);
         }
@@ -91,7 +93,7 @@ const Group: IGroup = {
             throw new Error(NOT_FOUND);
         }
         const participantIndex = doc.participants.findIndex(
-            (p) => p.id === user
+            (p: UserDocument | string) => <string>p === user
         );
         if (participantIndex < 0) {
             throw new Error(NOT_FOUND);
