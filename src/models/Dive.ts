@@ -8,7 +8,7 @@ import {
     GearDocument,
     UpdateUserInput,
 } from ".";
-import { resources, errorCodes } from "..";
+import { getResourceId, resources, errorCodes } from "..";
 import resourceFactory from "./utils/resourceFactory";
 const {
     INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT,
@@ -17,7 +17,7 @@ const {
 } = errorCodes;
 
 export interface DiveDocument extends Document {
-    user: UserDocument;
+    user: UserDocument | string;
     public: boolean;
     timeIn?: Date;
     timeOut?: Date;
@@ -27,14 +27,14 @@ export interface DiveDocument extends Document {
     maxDepth?: number;
     location?: string;
     description?: string;
-    club?: ClubDocument;
-    buddies?: UserDocument[];
-    gear?: GearDocument[];
+    club?: ClubDocument | string;
+    buddies?: UserDocument[] | string[];
+    gear?: GearDocument[] | string[];
 }
 
 export interface CreateDiveInput {
-    user?: DiveDocument["user"];
-    public?: DiveDocument["public"];
+    user: DiveDocument["user"];
+    public: DiveDocument["public"];
     timeIn?: DiveDocument["timeIn"];
     timeOut?: DiveDocument["timeOut"];
     bottomTime?: DiveDocument["bottomTime"];
@@ -49,7 +49,6 @@ export interface CreateDiveInput {
 }
 
 export interface UpdateDiveInput extends UpdateQuery<DiveDocument> {
-    user?: DiveDocument["user"];
     public?: DiveDocument["public"];
     timeIn?: DiveDocument["timeIn"];
     timeOut?: DiveDocument["timeOut"];
@@ -65,7 +64,7 @@ export interface UpdateDiveInput extends UpdateQuery<DiveDocument> {
 }
 
 export interface IDive
-    extends IResource<DiveDocument, DiveDocument, UpdateUserInput> {
+    extends IResource<DiveDocument, CreateDiveInput, UpdateUserInput> {
     addGear(diveId: string, gearId: string): Promise<DiveDocument | null>;
     removeGear(diveId: string, gearId: string): Promise<DiveDocument | null>;
     addBuddy(diveId: string, buddyId: string): Promise<DiveDocument | null>;
@@ -155,7 +154,7 @@ const DiveModel = model<DiveDocument>(resources.DIVE, DiveSchema);
 const Dive: IDive = {
     ...resourceFactory(DiveModel, {
         async create(dive: DiveDocument) {
-            await User.update(dive.user.id, {
+            await User.update(getResourceId(dive.user), {
                 $push: {
                     dives: dive.id,
                 },
@@ -167,7 +166,7 @@ const Dive: IDive = {
             if (!dive) {
                 throw new Error(NOT_FOUND);
             }
-            await User.update(dive.user.id, {
+            await User.update(getResourceId(dive.user), {
                 $pull: {
                     dives: id,
                 },

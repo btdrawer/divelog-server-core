@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { get } from "lodash";
 import mongoose from "mongoose";
 import {
     documentTypes,
@@ -80,7 +80,7 @@ export const dives: TestData<any, documentTypes.DiveDocument> = [
             safetyStopTime: 3.0,
             maxDepth: 15.5,
             location: "Sample location",
-            description: "Dive description",
+            description: "Other dive description",
             public: true,
         },
         output: undefined,
@@ -285,57 +285,57 @@ export const seedDatabase = (resources: {
     if (resources.clubs) {
         await saveClub(
             0,
-            [_.get(users[0], "output.id"), _.get(users[2], "output.id")],
-            [_.get(users[1], "output.id")]
+            [get(users[0], "output.id"), get(users[2], "output.id")],
+            [get(users[1], "output.id")]
         );
         await saveClub(
             1,
-            [_.get(users[2], "output.id")],
-            [_.get(users[0], "output.id")]
+            [get(users[2], "output.id")],
+            [get(users[0], "output.id")]
         );
     }
 
     // Example gear
     if (resources.gear) {
-        await saveGear(0, _.get(users[0], "output.id"));
-        await saveGear(1, _.get(users[0], "output.id"));
-        await saveGear(2, _.get(users[1], "output.id"));
+        await saveGear(0, get(users[0], "output.id"));
+        await saveGear(1, get(users[0], "output.id"));
+        await saveGear(2, get(users[1], "output.id"));
     }
 
     // Example dives
     if (resources.dives) {
         await saveDive(
             0,
-            _.get(users[0], "output.id"),
-            _.get(clubs[0], "output.id"),
-            [_.get(users[1], "output.id")],
-            [_.get(gear[0], "output.id")]
+            get(users[0], "output.id"),
+            get(clubs[0], "output.id"),
+            [get(users[1], "output.id")],
+            [get(gear[0], "output.id")]
         );
         await saveDive(
             1,
-            _.get(users[1], "output.id"),
+            get(users[1], "output.id"),
             null,
-            [_.get(users[0], "output.id")],
-            [_.get(gear[0], "output.id"), _.get(gear[1], "output.id")]
+            [get(users[0], "output.id")],
+            [get(gear[0], "output.id"), get(gear[1], "output.id")]
         );
-        await saveDive(2, _.get(users[0], "output.id"), null, [], []);
-        await saveDive(3, _.get(users[1], "output.id"), null, [], []);
-        await saveDive(4, _.get(users[1], "output.id"), null, [], []);
+        await saveDive(2, get(users[0], "output.id"), null, [], []);
+        await saveDive(3, get(users[1], "output.id"), null, [], []);
+        await saveDive(4, get(users[1], "output.id"), null, [], []);
     }
 
     // Example groups
     if (resources.groups) {
-        await saveGroup(0, _.get(users[0], "output.id"), [
-            _.get(users[0], "output.id"),
-            _.get(users[1], "output.id"),
+        await saveGroup(0, get(users[0], "output.id"), [
+            get(users[0], "output.id"),
+            get(users[1], "output.id"),
         ]);
-        await saveGroup(1, _.get(users[1], "output.id"), [
-            _.get(users[1], "output.id"),
-            _.get(users[2], "output.id"),
+        await saveGroup(1, get(users[1], "output.id"), [
+            get(users[1], "output.id"),
+            get(users[2], "output.id"),
         ]);
-        await saveGroup(2, _.get(users[0], "output.id"), [
-            _.get(users[0], "output.id"),
-            _.get(users[1], "output.id"),
+        await saveGroup(2, get(users[0], "output.id"), [
+            get(users[0], "output.id"),
+            get(users[1], "output.id"),
         ]);
     }
 
