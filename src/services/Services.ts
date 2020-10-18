@@ -1,5 +1,5 @@
 import mongoose, { Connection } from "mongoose";
-import CacheService from "./cacheService";
+import CacheService from "./Cache";
 
 class Services {
     mongoose: Connection;
