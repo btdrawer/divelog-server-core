@@ -8,6 +8,7 @@ class CacheService {
         this.redisClient = new Redis(
             `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
         );
+        this.redisClient.setMaxListeners(0);
     }
 
     queryWithCache = async (
