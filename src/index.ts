@@ -1,6 +1,13 @@
-import { resources, errorCodes, subscriptionKeys } from "./utils/constants";
-import { signJwt, hashPassword, comparePassword } from "./utils/authUtils";
-import * as seedDatabase from "./utils/seedDatabase";
+import {
+    getResourceId,
+    resources,
+    errorCodes,
+    subscriptionKeys,
+    signJwt,
+    hashPassword,
+    comparePassword,
+    seeder,
+} from "./utils";
 import type * as documentTypes from "./models";
 import { User, Dive, Club, Gear, Group } from "./models";
 import Services from "./services/Services";
@@ -13,11 +20,12 @@ export {
     Gear,
     Group,
     Services,
+    getResourceId,
     resources,
     errorCodes,
     subscriptionKeys,
     signJwt,
     hashPassword,
     comparePassword,
-    seedDatabase,
+    seeder,
 };

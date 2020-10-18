@@ -2,7 +2,7 @@ import { Document, Schema, model, UpdateQuery } from "mongoose";
 import { IResource, User, UserDocument } from ".";
 import { resources } from "..";
 import resourceFactory from "./utils/resourceFactory";
-const { USER, CLUB } = resources;
+import { getResourceId } from "../utils";
 
 export interface ClubDocument extends Document {
     name: string;
@@ -59,14 +59,14 @@ const ClubSchema: Schema = new Schema({
     managers: [
         {
             type: Schema.Types.ObjectId,
-            ref: USER,
+            ref: resources.USER,
             required: true,
         },
     ],
     members: [
         {
             type: Schema.Types.ObjectId,
-            ref: USER,
+            ref: resources.USER,
             required: true,
         },
     ],
@@ -76,16 +76,43 @@ const ClubSchema: Schema = new Schema({
     },
 });
 
-const ClubModel = model<ClubDocument>(CLUB, ClubSchema);
+const ClubModel = model<ClubDocument>(resources.CLUB, ClubSchema);
 
 const Club: IClub = {
     ...resourceFactory(ClubModel, {
         async create(club: ClubDocument) {
-            await User.update(<string>club.managers[0], {
+            await User.update(getResourceId(club.managers[0]), {
                 $push: {
                     "clubs.manager": club.id,
                 },
             });
+        },
+
+        async delete(id: string) {
+            await User.updateMany(
+                {
+                    "clubs.manager": {
+                        $in: id,
+                    },
+                },
+                {
+                    $pull: {
+                        "clubs.manager": id,
+                    },
+                }
+            );
+            await User.updateMany(
+                {
+                    "clubs.member": {
+                        $in: id,
+                    },
+                },
+                {
+                    $pull: {
+                        "clubs.member": id,
+                    },
+                }
+            );
         },
     }),
 
@@ -143,34 +170,6 @@ const Club: IClub = {
             },
         });
         return club;
-    },
-
-    async delete(id: string) {
-        await User.updateMany(
-            {
-                "clubs.manager": {
-                    $in: id,
-                },
-            },
-            {
-                $pull: {
-                    "clubs.manager": id,
-                },
-            }
-        );
-        await User.updateMany(
-            {
-                "clubs.member": {
-                    $in: id,
-                },
-            },
-            {
-                $pull: {
-                    "clubs.member": id,
-                },
-            }
-        );
-        return ClubModel.findByIdAndDelete(id);
     },
 };
 

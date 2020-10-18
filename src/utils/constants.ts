@@ -4,6 +4,7 @@ export const resources = {
     CLUB: "Club",
     GEAR: "Gear",
     GROUP: "Group",
+    MESSAGE: "Message",
 };
 
 export const errorCodes = {
@@ -18,6 +19,7 @@ export const errorCodes = {
     USERNAME_EXISTS: "A user with that username already exists.",
     EMAIL_EXISTS: "A user with that email address already exists.",
     USER_ALREADY_IN_GROUP: "That user is already present in the group.",
+    USER_NOT_IN_GROUP: "That user is not a member.",
     INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT:
         "Time in cannot be later than time out.",
     INVALID_ARGUMENT_DIVE_TIME_EXCEEDED:

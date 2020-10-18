@@ -13,7 +13,7 @@ const resourceFactory = <T extends Document, U, V extends UpdateQuery<T>>(
     model: Model<T, any>,
     additionalRequests?: {
         create?(resource: T): Promise<void>;
-        delete?(resource: T): Promise<void>;
+        delete?(id: string): Promise<void>;
     }
 ): IResource<T, U, V> => ({
     construct(doc: T) {
@@ -49,11 +49,10 @@ const resourceFactory = <T extends Document, U, V extends UpdateQuery<T>>(
     },
 
     async delete(id: string) {
-        const resource = await model.findByIdAndDelete(id);
         if (additionalRequests?.delete) {
-            await additionalRequests.delete(resource);
+            await additionalRequests.delete(id);
         }
-        return resource;
+        return model.findByIdAndDelete(id);
     },
 });
 

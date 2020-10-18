@@ -12,4 +12,5 @@ export { UserDocument, CreateUserInput, UpdateUserInput } from "./User";
 export { DiveDocument, CreateDiveInput, UpdateDiveInput } from "./Dive";
 export { ClubDocument, CreateClubInput, UpdateClubInput } from "./Club";
 export { GearDocument, CreateGearInput, UpdateGearInput } from "./Gear";
-export { MessageDocument, GroupDocument, CreateGroupInput } from "./Group";
+export { GroupDocument, CreateGroupInput } from "./Group";
+export { MessageDocument, CreateMessageInput } from "./Message";

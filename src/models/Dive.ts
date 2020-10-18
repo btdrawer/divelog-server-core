@@ -10,10 +10,10 @@ import {
 } from ".";
 import { resources, errorCodes } from "..";
 import resourceFactory from "./utils/resourceFactory";
-const { USER, DIVE, CLUB, GEAR } = resources;
 const {
     INVALID_ARGUMENT_TIME_IN_LATER_THAN_OUT,
     INVALID_ARGUMENT_DIVE_TIME_EXCEEDED,
+    NOT_FOUND,
 } = errorCodes;
 
 export interface DiveDocument extends Document {
@@ -75,7 +75,7 @@ export interface IDive
 const DiveSchema: Schema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: resources.USER,
         required: true,
     },
     public: {
@@ -92,18 +92,18 @@ const DiveSchema: Schema = new Schema({
     description: String,
     club: {
         type: Schema.Types.ObjectId,
-        ref: CLUB,
+        ref: resources.CLUB,
     },
     buddies: [
         {
             type: Schema.Types.ObjectId,
-            ref: USER,
+            ref: resources.USER,
         },
     ],
     gear: [
         {
             type: Schema.Types.ObjectId,
-            ref: GEAR,
+            ref: resources.GEAR,
         },
     ],
 });
@@ -150,7 +150,7 @@ DiveSchema.pre<DiveDocument & { _update: DiveDocument }>(
     }
 );
 
-const DiveModel = model<DiveDocument>(DIVE, DiveSchema);
+const DiveModel = model<DiveDocument>(resources.DIVE, DiveSchema);
 
 const Dive: IDive = {
     ...resourceFactory(DiveModel, {
@@ -162,10 +162,14 @@ const Dive: IDive = {
             });
         },
 
-        async delete(dive: DiveDocument) {
+        async delete(id: string) {
+            const dive = await Dive.get(id);
+            if (!dive) {
+                throw new Error(NOT_FOUND);
+            }
             await User.update(dive.user.id, {
                 $pull: {
-                    dives: dive ? dive.id : null,
+                    dives: id,
                 },
             });
         },
