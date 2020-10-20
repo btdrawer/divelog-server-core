@@ -14,6 +14,7 @@ export const errorCodes = {
     ALREADY_FRIENDS: "You are already friends with this person.",
     CLUB_DETAILS_MISSING: "A new club must have both a name and a location.",
     INVALID_AUTH: "Your username and/or password were incorrect.",
+    INVALID_SORT_VALUE: "The sort value you specified was not valid.",
     FORBIDDEN: "You do not have access to this resource.",
     NOT_FOUND: "Resource not found.",
     USERNAME_EXISTS: "A user with that username already exists.",

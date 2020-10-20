@@ -94,9 +94,11 @@ describe("Gear", () => {
     });
 
     test("Should populate specified fields", async (done: any) => {
-        const retrievedGear = await Gear.get(get(gear[0], "output.id"), [
-            "owner",
-        ]);
+        const retrievedGear = await Gear.get(
+            get(gear[0], "output.id"),
+            undefined,
+            ["owner"]
+        );
         if (retrievedGear) {
             const { owner } = retrievedGear;
             expect(owner).toHaveProperty("name");

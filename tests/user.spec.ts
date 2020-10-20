@@ -142,7 +142,9 @@ describe("User", () => {
     });
 
     test("Should populate specified fields", async (done: any) => {
-        const user = await User.get(get(users[0], "output.id"), ["gear"]);
+        const user = await User.get(get(users[0], "output.id"), undefined, [
+            "gear",
+        ]);
         if (user) {
             expect(user.gear.length).toEqual(2);
             const exampleGear = user.gear[0];
