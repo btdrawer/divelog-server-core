@@ -272,7 +272,7 @@ export const seedDatabase = (resources: {
     clubs?: true;
     gear?: true;
     groups?: true;
-}) => async (done: any) => {
+}) => async () => {
     await mongoose.connection.db.dropDatabase();
 
     // Example users
@@ -339,5 +339,5 @@ export const seedDatabase = (resources: {
         ]);
     }
 
-    done();
+    return undefined;
 };
