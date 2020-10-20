@@ -1,6 +1,6 @@
-import { Document, Model, UpdateQuery } from "mongoose";
+import { Document, Model } from "mongoose";
 
-export interface IResource<T extends Document, U, V extends UpdateQuery<T>> {
+export interface IResource<T extends Document, U, V> {
     construct(doc: T): T;
     create(data: U): Promise<T>;
     find(filter?: any, fields?: any, options?: any): Promise<T[]>;
@@ -9,7 +9,7 @@ export interface IResource<T extends Document, U, V extends UpdateQuery<T>> {
     delete(id: string): Promise<T | null>;
 }
 
-const resourceFactory = <T extends Document, U, V extends UpdateQuery<T>>(
+const resourceFactory = <T extends Document, U, V>(
     model: Model<T, any>,
     additionalRequests?: {
         create?(resource: T): Promise<void>;
