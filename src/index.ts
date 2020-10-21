@@ -8,17 +8,11 @@ import {
     comparePassword,
     seeder,
 } from "./utils";
-import type * as documentTypes from "./models";
-import { User, Dive, Club, Gear, Group } from "./models";
 import Services from "./services/Services";
 
+export * from "./models";
+
 export {
-    documentTypes,
-    User,
-    Dive,
-    Club,
-    Gear,
-    Group,
     Services,
     getResourceId,
     resources,

@@ -1,13 +1,16 @@
 import { get } from "lodash";
 import mongoose from "mongoose";
 import {
-    documentTypes,
+    UserDocument,
+    DiveDocument,
+    ClubDocument,
+    GearDocument,
+    GroupDocument,
     User,
     Dive,
     Club,
     Gear,
     Group,
-    resources as resourceConstants,
 } from "..";
 
 type TestData<TInput, TOutput> = {
@@ -17,7 +20,7 @@ type TestData<TInput, TOutput> = {
     token?: string;
 }[];
 
-export const users: TestData<any, documentTypes.UserDocument> = [
+export const users: TestData<any, UserDocument> = [
     {
         input: {
             name: "User 1",
@@ -58,7 +61,7 @@ export const users: TestData<any, documentTypes.UserDocument> = [
     },
 ];
 
-export const dives: TestData<any, documentTypes.DiveDocument> = [
+export const dives: TestData<any, DiveDocument> = [
     {
         input: {
             timeIn: "2020-01-01T11:00:00",
@@ -126,7 +129,7 @@ export const dives: TestData<any, documentTypes.DiveDocument> = [
     },
 ];
 
-export const clubs: TestData<any, documentTypes.ClubDocument> = [
+export const clubs: TestData<any, ClubDocument> = [
     {
         input: {
             name: "A",
@@ -147,7 +150,7 @@ export const clubs: TestData<any, documentTypes.ClubDocument> = [
     },
 ];
 
-export const gear: TestData<any, documentTypes.GearDocument> = [
+export const gear: TestData<any, GearDocument> = [
     {
         input: {
             name: "A",
@@ -177,7 +180,7 @@ export const gear: TestData<any, documentTypes.GearDocument> = [
     },
 ];
 
-export const groups: TestData<any, documentTypes.GroupDocument> = [
+export const groups: TestData<any, GroupDocument> = [
     {
         input: {
             name: "New Group",
