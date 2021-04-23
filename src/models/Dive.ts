@@ -64,7 +64,7 @@ export interface UpdateDiveInput extends UpdateQuery<DiveDocument> {
 }
 
 export interface IDive
-    extends IResource<DiveDocument, CreateDiveInput, UpdateUserInput> {
+    extends IResource<DiveDocument, CreateDiveInput, UpdateDiveInput> {
     addGear(diveId: string, gearId: string): Promise<DiveDocument | null>;
     removeGear(diveId: string, gearId: string): Promise<DiveDocument | null>;
     addBuddy(diveId: string, buddyId: string): Promise<DiveDocument | null>;
